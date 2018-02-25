@@ -5,10 +5,11 @@
 package blockchair
 
 import (
+	"encoding/json"
 	"testing"
 )
 
-func TestClient_GetAddress(t *testing.T) {
+func TestGetAddress(t *testing.T) {
 	tests := []struct {
 		name     string
 		currency Currency
@@ -40,4 +41,58 @@ func TestClient_GetAddress(t *testing.T) {
 			}
 		})
 	}
+}
+
+func BenchmarkGetAddressUnmarshal(b *testing.B) {
+	cl := New(Bitcoin)
+	response, e := cl.GetAddress("3D2oetdNuZUqQHPJmcMDDHYoqkyNVsFk9r")
+	if e != nil {
+		b.Fatal(e)
+	}
+
+	bytes, e := json.Marshal(response)
+	if e != nil {
+		b.Fatal(e)
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		e := json.Unmarshal(bytes, response)
+		if e != nil {
+			b.Fatal(e)
+		}
+	}
+	b.StopTimer()
+}
+
+func BenchmarkGetAddressRawUnmarshal(b *testing.B) {
+	cl := New(Bitcoin)
+	response, e := cl.GetAddressRaw("3D2oetdNuZUqQHPJmcMDDHYoqkyNVsFk9r")
+	if e != nil {
+		b.Fatal(e)
+	}
+
+	bytes, e := json.Marshal(response)
+	if e != nil {
+		b.Fatal(e)
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		e := json.Unmarshal(bytes, response)
+		if e != nil {
+			b.Fatal(e)
+		}
+	}
+	b.StopTimer()
+}
+
+func BenchmarkGetAddressRequest(b *testing.B) {
+	cl := New(Bitcoin)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_, e := cl.GetAddressRaw("3D2oetdNuZUqQHPJmcMDDHYoqkyNVsFk9r")
+		if e != nil {
+			b.Error(e)
+		}
+	}
+	b.StopTimer()
 }
