@@ -18,12 +18,17 @@ const (
 	APIRootNet = "https://api.blockchair.com"
 )
 
+// Currency special type for currency codes like enum
+type Currency uint8
+
 const (
-	Bitcoin = iota
+	// Bitcoin constant storing bitcoin cryptocurrency code for use inside the package
+	Bitcoin Currency = iota
+	// BitcoinCash constant storing bitcoin cash cryptocurrency code for use inside the package
 	BitcoinCash
 )
 
-var currencyURL = map[uint8]string{
+var currencyURL = map[Currency]string{
 	Bitcoin:     "bitcoin",
 	BitcoinCash: "bitcoin-cash",
 }
@@ -32,7 +37,7 @@ var currencyURL = map[uint8]string{
 type Client struct {
 	http     *http.Client
 	apiRoot  string
-	currency uint8
+	currency Currency
 }
 
 // DoRequest to send an http request, which is then converted to the passed type.
@@ -45,7 +50,6 @@ func (c *Client) DoRequest(path string, i interface{}) (e error) {
 	}
 
 	defer response.Body.Close()
-
 	bytes, e := ioutil.ReadAll(response.Body)
 	if e != nil {
 		return
@@ -58,16 +62,16 @@ func (c *Client) DoRequest(path string, i interface{}) (e error) {
 }
 
 // New specifies the mechanism by create new client the network internet
-func New(u uint8) *Client {
+func New(u Currency) *Client {
 	return &Client{http: &http.Client{}, apiRoot: APIRootNet, currency: u}
 }
 
-// SetCurrency Currency setter
-func (c *Client) SetCurrency(u uint8) {
+// SetCurrency currency setter
+func (c *Client) SetCurrency(u Currency) {
 	c.currency = u
 }
 
 // SetHTTP http client setter
-func (c *Client) SetHTTP(cli *http.Client) {
-	c.http = cli
+func (c *Client) SetHTTP(client *http.Client) {
+	c.http = client
 }
