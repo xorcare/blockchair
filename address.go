@@ -86,7 +86,7 @@ func ValidateBitcoinAddress(address string) bool {
 
 func (c *Client) checkAddress(address string) error {
 	if !ValidateBitcoinAddress(address) {
-		return c.errorAddress(ErrAIW, address)
+		return c.err4(ErrAIW, address)
 	}
 
 	return nil

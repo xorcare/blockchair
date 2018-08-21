@@ -71,27 +71,27 @@ func (c *Client) userAgent() string {
 func (c *Client) Do(path string, i interface{}) error {
 	req, e := http.NewRequest("GET", c.BasePath+"/"+c.Currency.String()+path, nil)
 	if e != nil {
-		return c.errors(ErrCGD, e)
+		return c.err2(ErrCGD, e)
 	}
 	req.Header.Set("User-Agent", c.userAgent())
 
 	resp, e := c.client.Do(req)
 	if e != nil {
-		return c.errorResponse(ErrCGD, e, resp)
+		return c.err3(ErrCGD, e, resp)
 	}
 	defer resp.Body.Close()
 
 	bytes, e := ioutil.ReadAll(resp.Body)
 	if e != nil {
-		return c.errorResponse(ErrCRR, e, resp)
+		return c.err3(ErrCRR, e, resp)
 	}
 
 	if resp.Status[0] != '2' {
-		return c.errorResponse(ErrIRS, errors.New(string(bytes)), resp)
+		return c.err3(ErrIRS, errors.New(string(bytes)), resp)
 	}
 
 	if e = json.Unmarshal(bytes, &i); e != nil {
-		return c.errorResponse(ErrRPE, e, resp)
+		return c.err3(ErrRPE, e, resp)
 	}
 
 	return nil
