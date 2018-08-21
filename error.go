@@ -7,11 +7,11 @@ import (
 
 // Errors it is a set of errors returned when working with the package.
 var (
-	ErrAIW = errors.New("address is wrong")
-	ErrCGD = errors.New("cannot get data on url")
-	ErrCRR = errors.New("could not read answer response")
-	ErrIRS = errors.New("incorrect response status")
-	ErrRPE = errors.New("response parsing error")
+	ErrAIW = errors.New(Package + ": address is wrong")
+	ErrCGD = errors.New(Package + ": cannot get data on url")
+	ErrCRR = errors.New(Package + ": could not read answer response")
+	ErrIRS = errors.New(Package + ": incorrect response status")
+	ErrRPE = errors.New(Package + ": response parsing error")
 )
 
 // Error data structure describing the error.

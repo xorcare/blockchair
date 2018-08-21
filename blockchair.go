@@ -2,7 +2,10 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package blockchair
+// Package blockchair Golang client Blockchair api.
+//
+// https://github.com/Blockchair/Blockchair.Support/blob/master/API.md
+package blockchair // import "github.com/xorcare/blockchair"
 
 import (
 	"encoding/json"
@@ -16,8 +19,11 @@ const (
 	// Version api client.
 	Version = "0.3"
 
+	//Package package name const
+	Package = "blockchair"
+
 	// UserAgent is the header string used to identify this package.
-	UserAgent = "blockchair-api-go-client/" + Version + " (go; github; +https://git.io/fAJhJ)"
+	UserAgent = Package + "-api-go-client/" + Version + " (go; github; +https://git.io/fAJhJ)"
 
 	// BasePath the root address in the network.
 	BasePath = "https://api.blockchair.com"
@@ -99,7 +105,7 @@ func New(u Currency) *Client {
 // SetClient client client setter.
 func (c *Client) SetClient(client *http.Client) {
 	if client == nil {
-		panic("blockchair: impossible install the client as nil")
+		panic(Package + ": impossible install the client as nil")
 	}
 	c.client = client
 }
