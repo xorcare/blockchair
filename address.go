@@ -6,7 +6,7 @@ package blockchair
 
 import (
 	"encoding/json"
-	"fmt"
+	"errors"
 )
 
 type AddressResponse struct {
@@ -50,10 +50,8 @@ func (c *Client) GetAddress(address string) (a *Address, e error) {
 
 	if len(response.Data) == 1 {
 		a = &response.Data[0]
-	} else {
-		if len(response.Data) > 1 {
-			e = fmt.Errorf("Unexpected response from the server")
-		}
+	} else if len(response.Data) > 1 {
+		e = errors.New("unexpected response from the server")
 	}
 
 	return
