@@ -46,6 +46,10 @@ type Activity struct {
 // GetAddress
 // https://api.blockchair.com/bitcoin/dashboards/address/{address}
 func (c *Client) GetAddress(address string) (a *Address, e error) {
+	if e = c.checkAddress(address); e != nil {
+		return
+	}
+
 	response, e := c.GetAddressRaw(address)
 
 	if len(response.Data) == 1 {
@@ -60,8 +64,25 @@ func (c *Client) GetAddress(address string) (a *Address, e error) {
 // GetAddressRaw
 // https://api.blockchair.com/bitcoin/dashboards/address/{address}
 func (c *Client) GetAddressRaw(address string) (response *AddressResponse, e error) {
+	if e = c.checkAddress(address); e != nil {
+		return
+	}
+
 	response = &AddressResponse{}
 	e = c.Do("/dashboards/address/"+address, response)
 
 	return
+}
+
+// ValidateBitcoinAddress bitcoin address validator.
+func ValidateBitcoinAddress(address string) bool {
+	return validateBitcoinAddress(address) != -1
+}
+
+func (c *Client) checkAddress(address string) error {
+	if !ValidateBitcoinAddress(address) {
+		return c.errorAddress(ErrAIW, address)
+	}
+
+	return nil
 }

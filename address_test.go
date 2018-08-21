@@ -42,6 +42,37 @@ func TestGetAddress(t *testing.T) {
 	}
 }
 
+func TestValidateBitcoinAddress(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		address string
+		result  bool
+	}{
+		// one signature addresses
+		{"1111111111111111111114oLvT2", true},
+		{"1dyoBoF5vDmPCxwSsUZbbYhA5qjAfBTx9", true},
+		{"15yN7NPEpu82sHhB6TzCW5z5aXoamiKeGy", true},
+		{"1F3EpcBBjVGaUuEJff9xYZBfBBALm1yfsd", true},
+		// multi signature addresses
+		{"3B8SEgcT9JDVKUZvm8HoKX5Av3nnn7pHqa", true},
+		{"3KGPnzYshia2uSSz8BED2kSpx22bbGCkzq", true},
+		// bad addresses
+		{"", false},
+		{"1111111111111111111114oLvT", false},
+		{"1111111111111111111114iLvT", false},
+		{"0111111111111111111114oLvT2", false},
+		{"xpub6DF8uhdarytz3FWdA8TvFSv", false},
+		{"xpub3KGPnzYshia2uSSz8BED2kSpx22bbGCkzq", false},
+	}
+	for _, test := range tests {
+		t.Run(test.address, func(t *testing.T) {
+			if ValidateBitcoinAddress(test.address) != test.result {
+				t.Fatalf("validate test failed address: %s", test.address)
+			}
+		})
+	}
+}
+
 func BenchmarkGetAddressUnmarshal(b *testing.B) {
 	cl := New(Bitcoin)
 	response, e := cl.GetAddress("3D2oetdNuZUqQHPJmcMDDHYoqkyNVsFk9r")

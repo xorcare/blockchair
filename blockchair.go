@@ -14,7 +14,7 @@ import (
 
 const (
 	// Version api client.
-	Version = "0.2"
+	Version = "0.3"
 
 	// UserAgent is the header string used to identify this package.
 	UserAgent = "blockchair-api-go-client/" + Version + " (go; github; +https://git.io/fAJhJ)"
