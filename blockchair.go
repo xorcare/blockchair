@@ -96,7 +96,10 @@ func New(u Currency) *Client {
 	return &Client{client: &http.Client{}, BasePath: BasePath, Currency: u}
 }
 
-// SetHTTP client client setter.
-func (c *Client) SetHTTP(client *http.Client) {
+// SetClient client client setter.
+func (c *Client) SetClient(client *http.Client) {
+	if client == nil {
+		panic("blockchair: impossible install the client as nil")
+	}
 	c.client = client
 }
