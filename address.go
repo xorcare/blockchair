@@ -9,6 +9,7 @@ import (
 	"errors"
 )
 
+// AddressResponse includes full server response to address request.
 type AddressResponse struct {
 	Data   []Address `json:"data"`
 	Rows   uint      `json:"rows"`
@@ -18,6 +19,7 @@ type AddressResponse struct {
 	Source string    `json:"source"`
 }
 
+// Address describes the structure of the address.
 type Address struct {
 	SumValue            json.Number `json:"sum_value"`
 	SumValueUsd         json.Number `json:"sum_value_usd"`
@@ -37,13 +39,15 @@ type Address struct {
 	SpendingActivity    []Activity  `json:"spending_activity"`
 }
 
+// Activity describes the structure of the activity.
 type Activity struct {
 	Year  int    `json:"year"`
 	Month int    `json:"month"`
 	Value string `json:"value"`
 }
 
-// GetAddress
+// GetAddress get address.
+//
 // https://api.blockchair.com/bitcoin/dashboards/address/{address}
 func (c *Client) GetAddress(address string) (a *Address, e error) {
 	if e = c.checkAddress(address); e != nil {
@@ -61,7 +65,8 @@ func (c *Client) GetAddress(address string) (a *Address, e error) {
 	return
 }
 
-// GetAddressRaw
+// GetAddressRaw get full address response.
+//
 // https://api.blockchair.com/bitcoin/dashboards/address/{address}
 func (c *Client) GetAddressRaw(address string) (response *AddressResponse, e error) {
 	if e = c.checkAddress(address); e != nil {

@@ -19,14 +19,14 @@ const (
 	// UserAgent is the header string used to identify this package.
 	UserAgent = "blockchair-api-go-client/" + Version + " (go; github; +https://git.io/fAJhJ)"
 
-	// BasePath the root address in the network
+	// BasePath the root address in the network.
 	BasePath = "https://api.blockchair.com"
 )
 
-// Currency special type for currency codes like enum
+// Currency special type for currency codes like enum.
 type Currency uint8
 
-// String returns a string representation for the currency
+// String returns a string representation for the currency.
 func (c Currency) String() (currency string) {
 	switch c {
 	case Bitcoin:
@@ -38,9 +38,9 @@ func (c Currency) String() (currency string) {
 }
 
 const (
-	// Bitcoin constant storing bitcoin cryptocurrency code for use inside the package
+	// Bitcoin constant storing bitcoin cryptocurrency code for use inside the package.
 	Bitcoin = Currency(0)
-	// BitcoinCash constant storing bitcoin cash cryptocurrency code for use inside the package
+	// BitcoinCash constant storing bitcoin cash cryptocurrency code for use inside the package.
 	BitcoinCash = Currency(1)
 )
 
@@ -49,7 +49,7 @@ type Client struct {
 	client    *http.Client
 	BasePath  string   // API endpoint base URL.
 	UserAgent string   // Optional additional User-Agent fragment.
-	Currency  Currency // The currency in which information is requested
+	Currency  Currency // The currency in which information is requested.
 }
 
 func (c *Client) userAgent() string {
@@ -91,12 +91,12 @@ func (c *Client) Do(path string, i interface{}) error {
 	return nil
 }
 
-// New specifies the mechanism by create new client the network internet
+// New specifies the mechanism by create new client the network internet.
 func New(u Currency) *Client {
 	return &Client{client: &http.Client{}, BasePath: BasePath, Currency: u}
 }
 
-// SetHTTP client client setter
+// SetHTTP client client setter.
 func (c *Client) SetHTTP(client *http.Client) {
 	c.client = client
 }
