@@ -61,7 +61,7 @@ func (c *Client) GetAddress(address string) (a *Address, e error) {
 // https://api.blockchair.com/bitcoin/dashboards/address/{address}
 func (c *Client) GetAddressRaw(address string) (response *AddressResponse, e error) {
 	response = &AddressResponse{}
-	e = c.DoRequest("/dashboards/address/"+address, response)
+	e = c.Do("/dashboards/address/"+address, response)
 
 	return
 }

@@ -6,19 +6,27 @@ package blockchair
 
 import (
 	"encoding/json"
-	"fmt"
+	"errors"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 const (
+	// Version api client.
+	Version = "0.2"
+
+	// UserAgent is the header string used to identify this package.
+	UserAgent = "blockchair-api-go-client/" + Version + " (go; github; +https://git.io/fAJhJ)"
+
 	// BasePath the root address in the network
 	BasePath = "https://api.blockchair.com"
 )
 
-// Currency special type for Currency codes like enum
+// Currency special type for currency codes like enum
 type Currency uint8
 
+// String returns a string representation for the currency
 func (c Currency) String() (currency string) {
 	switch c {
 	case Bitcoin:
@@ -38,38 +46,57 @@ const (
 
 // Client specifies the mechanism by which individual API requests are made.
 type Client struct {
-	http     *http.Client
-	BasePath string
-	Currency Currency
+	client    *http.Client
+	BasePath  string   // API endpoint base URL.
+	UserAgent string   // Optional additional User-Agent fragment.
+	Currency  Currency // The currency in which information is requested
 }
 
-// DoRequest to send an http request, which is then converted to the passed type.
-func (c *Client) DoRequest(path string, i interface{}) (e error) {
-	fullPath := c.BasePath + "/" + c.Currency.String() + path
-	response, e := c.http.Get(fullPath)
-	if e != nil {
-		return
+func (c *Client) userAgent() string {
+	c.UserAgent = strings.TrimSpace(c.UserAgent)
+	if c.UserAgent == "" {
+		return UserAgent
 	}
 
-	defer response.Body.Close()
-	bytes, e := ioutil.ReadAll(response.Body)
+	return UserAgent + " " + c.UserAgent
+}
+
+// Do to send an client request, which is then converted to the passed type.
+func (c *Client) Do(path string, i interface{}) error {
+	req, e := http.NewRequest("GET", c.BasePath+"/"+c.Currency.String()+path, nil)
 	if e != nil {
-		return
+		return c.errors(ErrCGD, e)
 	}
-	fmt.Println(string(bytes))
-	if response.Status[0] != '2' {
-		return fmt.Errorf("response error status %3s: %s", response.Status, string(bytes))
+	req.Header.Set("User-Agent", c.userAgent())
+
+	resp, e := c.client.Do(req)
+	if e != nil {
+		return c.errorResponse(ErrCGD, e, resp)
+	}
+	defer resp.Body.Close()
+
+	bytes, e := ioutil.ReadAll(resp.Body)
+	if e != nil {
+		return c.errorResponse(ErrCRR, e, resp)
 	}
 
-	return json.Unmarshal(bytes, &i)
+	if resp.Status[0] != '2' {
+		return c.errorResponse(ErrIRS, errors.New(string(bytes)), resp)
+	}
+
+	if e = json.Unmarshal(bytes, &i); e != nil {
+		return c.errorResponse(ErrRPE, e, resp)
+	}
+
+	return nil
 }
 
 // New specifies the mechanism by create new client the network internet
 func New(u Currency) *Client {
-	return &Client{http: &http.Client{}, BasePath: BasePath, Currency: u}
+	return &Client{client: &http.Client{}, BasePath: BasePath, Currency: u}
 }
 
-// SetHTTP http client setter
+// SetHTTP client client setter
 func (c *Client) SetHTTP(client *http.Client) {
-	c.http = client
+	c.client = client
 }
