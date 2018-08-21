@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Golang client Blockchair api -> https://github.com/Blockchair/Blockchair.Support/blob/master/API.md
-
 package blockchair
 
 import (
@@ -14,8 +12,8 @@ import (
 )
 
 const (
-	// APIRootNet the root address in the network
-	APIRootNet = "https://api.blockchair.com"
+	// BasePath the root address in the network
+	BasePath = "https://api.blockchair.com"
 )
 
 // Currency special type for Currency codes like enum
@@ -41,13 +39,13 @@ const (
 // Client specifies the mechanism by which individual API requests are made.
 type Client struct {
 	http     *http.Client
-	apiRoot  string
+	BasePath string
 	Currency Currency
 }
 
 // DoRequest to send an http request, which is then converted to the passed type.
 func (c *Client) DoRequest(path string, i interface{}) (e error) {
-	fullPath := c.apiRoot + "/" + c.Currency.String() + path
+	fullPath := c.BasePath + "/" + c.Currency.String() + path
 	response, e := c.http.Get(fullPath)
 	if e != nil {
 		return
@@ -58,6 +56,7 @@ func (c *Client) DoRequest(path string, i interface{}) (e error) {
 	if e != nil {
 		return
 	}
+	fmt.Println(string(bytes))
 	if response.Status[0] != '2' {
 		return fmt.Errorf("response error status %3s: %s", response.Status, string(bytes))
 	}
@@ -67,7 +66,7 @@ func (c *Client) DoRequest(path string, i interface{}) (e error) {
 
 // New specifies the mechanism by create new client the network internet
 func New(u Currency) *Client {
-	return &Client{http: &http.Client{}, apiRoot: APIRootNet, Currency: u}
+	return &Client{http: &http.Client{}, BasePath: BasePath, Currency: u}
 }
 
 // SetHTTP http client setter
