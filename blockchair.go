@@ -17,7 +17,7 @@ import (
 
 const (
 	// Version api client.
-	Version = "0.3"
+	Version = "0.4"
 
 	//Package package name const
 	Package = "blockchair"
