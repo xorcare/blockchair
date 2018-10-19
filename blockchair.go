@@ -26,7 +26,7 @@ const (
 	UserAgent = Package + "-api-go-client/" + Version + " (go; github; +https://git.io/fAJhJ)"
 
 	// BasePath the root address in the network.
-	BasePath = "https://api.blockchair.com"
+	BasePath = "https://api-v1.blockchair.com"
 )
 
 // Currency special type for currency codes like enum.
