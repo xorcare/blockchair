@@ -1,7 +1,12 @@
 language: go
 
 go:
-  - tip
+- 1.11.x
+- master
 
-os:
-  - linux
+env:
+  global:
+  - GO111MODULE=on
+  matrix:
+  - GOARCH=386
+  - GOARCH=amd64
