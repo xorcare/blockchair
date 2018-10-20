@@ -19,7 +19,7 @@ const (
 	// Version api client.
 	Version = "0.4"
 
-	//Package package name const
+	// Package package name const.
 	Package = "blockchair"
 
 	// UserAgent is the header string used to identify this package.
